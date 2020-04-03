@@ -1,0 +1,69 @@
+#!/usr/bin/expect
+
+set timeout 20
+
+set argv [lassign $argv file host pass]
+if {$file eq ""} {send_user "No file specified. Aborting\n"; return}
+if {$host eq ""} {set host 0}
+if {$pass eq ""} {set pass dnroot}
+
+set prompt "dev-dnRouter"
+
+if {![file exists $file]} {
+	set file2 $env(_DNCONFIG_DIR)$file
+	if {![file exists $file2]} {
+		send_user "File $file does not exist. Aborting\n"
+		return
+	} else {
+		set file $file2
+	}
+}
+
+proc slurp {file} {
+    set fh [open $file r]
+    set ret [read $fh]
+    close $fh
+    return $ret
+}
+
+set file_contents [slurp $file]
+
+spawn sshpass -p $pass ssh dnroot@$host -p2223
+
+expect {
+	timeout { send_user "\nFailed to get prompt\n"; exit 1 }
+	"Unknown Error, CLI will now terminate" {
+		send_user "\nCLI did not open. Aborting.\n"
+		close
+		return
+	}
+	$prompt {}
+	close {
+		send_user "\nCLI terminated.\n"
+		return
+	}
+}
+
+send $file_contents
+send "commit\n"
+expect {
+	timeout { send_user "\nFailed to get confirmation\n"; exit 1 }
+	"ERROR: Command failed" {
+		send_user "\nWarning! Command failed\n"
+		close
+		return
+	}
+	"NOTICE: commit action is not applicable. no configuration changes were made" {
+		send_user "\nWarning! Commit was not applied\n"
+		close
+		return
+	}
+	"Commit succeeded by " {}
+}
+expect {
+	timeout { send_user "\nFailed to get final prompt\n"; exit 1 }
+	$prompt { send_user "\nConfig successful\n" }
+}
+
+close
+
