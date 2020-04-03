@@ -1,0 +1,5 @@
+alias de="docker-enter "
+alias der="de mgmt_routing-engine_1 'ip netns exec vrfns_default bash'"
+alias dem="de mgmt_management-engine_1"
+alias dps="docker-ps"
+alias ccon="clear_containers"

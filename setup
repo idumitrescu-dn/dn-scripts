@@ -1,0 +1,16 @@
+#!/bin/bash
+
+__SCRIPT_PATH=$(dirname ${BASH_SOURCE[0]})
+
+[ -r ${__SCRIPT_PATH}/bash_settings.sh ] && . ${__SCRIPT_PATH}/bash_settings.sh
+[ -r ${__SCRIPT_PATH}/bash_functions.sh ] && . ${__SCRIPT_PATH}/bash_functions.sh
+[ -r ${__SCRIPT_PATH}/bash_aliases.sh ] && . ${__SCRIPT_PATH}/bash_aliases.sh
+[ -r ${__SCRIPT_PATH}/bash_autocomplete.sh ] && . ${__SCRIPT_PATH}/bash_autocomplete.sh
+
+[ -d ${__SCRIPT_PATH}/scripts ] && for _script in $(ls ${__SCRIPT_PATH}/scripts/); do
+	source ${__SCRIPT_PATH}/scripts/${_script}
+done
+
+export PATH="${__SCRIPT_PATH}/bin:$PATH"
+
+unset __SCRIPT_PATH
