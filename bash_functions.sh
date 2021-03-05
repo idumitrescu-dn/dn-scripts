@@ -90,8 +90,10 @@ function slog()
 function mclean()
 {
     cdc
-    make clean
-    make orm build-infra-in-docker -j2 && make start_mgmt_env
+    sudo git clean -fdx
+    make orm
+    make ORM_TYPE=py orm-docker-layer
+    make build-system-events-in-docker build-infra-in-docker generate-dn-cli-api
 }
 
 # Utility functions
