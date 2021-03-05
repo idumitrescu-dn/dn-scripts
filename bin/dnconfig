@@ -28,7 +28,7 @@ proc slurp {file} {
 
 set file_contents [slurp $file]
 
-spawn sshpass -p $pass ssh dnroot@$host -p2223
+spawn sudo nsenter --net=/var/tmp/oob_ns -- sshpass -p $pass ssh dnroot@$host
 
 expect {
 	timeout { send_user "\nFailed to get prompt\n"; exit 1 }
