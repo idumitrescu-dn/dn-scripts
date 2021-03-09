@@ -1,5 +1,9 @@
+#!/bin/sh
+
+# Docker specific
 alias de="docker-enter "
-alias der="de mgmt_routing-engine_1 'ip netns exec vrfns_default bash'"
-alias dem="de mgmt_management-engine_1"
+alias den='de $(docker container ls --filter="label=com.docker.compose.service=node-manager" -q)'
+alias der='de `docker container ls --filter="label=com.docker.compose.service=routing-engine" -q` "ip netns exec vrfns_default bash"'
+alias dem='de `docker container ls --filter="label=com.docker.compose.service=management-engine" -q`'
 alias dps="docker-ps"
 alias ccon="clear_containers"
