@@ -270,13 +270,17 @@ function list_job
 
 ################################################################################
 # List all jobs stored
-# Input:
+# Input: [short]
 # Example:
 # list_jobs
+# list_jobs short
 function list_jobs
 {
+    local func='eval echo ; list_job'
+    if [ "$#" == "1" ] && [[ "$1" =~ "s"* ]]; then
+        func="echo Job "
+    fi
     for job in $(env | grep "^JOB_SERVICE_[^=]" -o | cut -f 3- -d '_'); do
-        list_job ${job}
-        echo
+        ${func} ${job}
     done
 }
