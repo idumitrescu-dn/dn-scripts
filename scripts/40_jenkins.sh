@@ -235,3 +235,48 @@ function run_job
 
     unset SERVICES BRANCH BUILD TESTS
 }
+
+################################################################################
+# List one or all jobs stored
+# Input: <NAME>
+# Example:
+# list_job 1
+function list_job
+{
+    if [ "$#" != "1" ]; then
+        echo "Usage: list_job <NAME>"
+        return 1
+    fi
+    local NAME=$1
+
+    eval export SERVICES='$'JOB_SERVICE_${NAME}
+    if [ -z "${SERVICES}" ]; then
+        echo "Job ${NAME} does not exist"
+        return 1
+    fi
+
+    eval export BRANCH='$'JOB_BRANCH_${NAME}
+    eval export BUILD='$'JOB_BUILD_${NAME}
+    eval export TESTS='$'JOB_TESTS_${NAME}
+
+    echo "Job ${NAME}:"
+    echo "Service ${SERVICES}"
+    echo "Branch ${BRANCH}"
+    echo "Build ${BUILD}"
+    echo "Tests ${TESTS}"
+
+    unset SERVICES BRANCH BUILD TESTS
+}
+
+################################################################################
+# List all jobs stored
+# Input:
+# Example:
+# list_jobs
+function list_jobs
+{
+    for job in $(env | grep "^JOB_SERVICE_[^=]" -o | cut -f 3- -d '_'); do
+        list_job ${job}
+        echo
+    done
+}
