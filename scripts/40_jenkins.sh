@@ -218,14 +218,15 @@ function run_job
 
     local NAME=$1
     eval export SERVICES='$'JOB_SERVICE_${NAME}
+    if [ -z "${SERVICES}" ]; then
+        echo "Job ${NAME} was not found. Please use add_job to define it."
+        unset SERVICES
+        return 1
+    fi
+
     eval export BRANCH='$'JOB_BRANCH_${NAME}
     eval export BUILD='$'JOB_BUILD_${NAME} # currently unused
     eval export TESTS='$'JOB_TESTS_${NAME}
-
-    if [ -z "${SERVICES}" ]; then
-        echo "Job ${NAME} was not found. Please use add_job to define it."
-        return 1
-    fi
 
     echo "#####################################################################"
     echo "Running job ${NAME} on branch ${BRANCH}"
@@ -252,6 +253,7 @@ function list_job
     eval export SERVICES='$'JOB_SERVICE_${NAME}
     if [ -z "${SERVICES}" ]; then
         echo "Job ${NAME} does not exist"
+        unset SERVICES
         return 1
     fi
 
