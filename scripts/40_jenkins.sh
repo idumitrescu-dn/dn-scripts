@@ -76,7 +76,7 @@ function add_jenkins_host()
 
 ################################################################################
 # Start a job on the given host with the exact URL.
-# The URL must include everything from http, user and password, to what options
+# The URL must include everything from https, user and password, to what options
 # to run.
 # Input: HOSTNAME URL
 # Example: start_job ${JENKINS_OFFICE_HOSTNAME} ....
@@ -89,7 +89,7 @@ function start_job
 
     local HOSTNAME=$1
     local URL=$2
-    local CRUMB_OFF=$(curl --silent "http://${HOSTNAME}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)")
+    local CRUMB_OFF=$(curl --silent "https://${HOSTNAME}/crumbIssuer/api/xml?xpath=concat(//crumbRequestField,\":\",//crumb)")
 
     __debug "Starting job with URL:\n${URL}"
 
@@ -116,7 +116,7 @@ function _create_build_url
     eval export _USERID='$'JENKINS_${_SERVICE}_USERID
     eval export _TOKEN='$'JENKINS_${_SERVICE}_TOKEN
 
-    echo "http://${_USERID}:${_TOKEN}@${_HOST}/job/drivenets/job/cheetah/job/${BRANCH_PROC}/buildWithParameters?delay=0sec${OPTIONS:+&${OPTIONS}}"
+    echo "https://${_USERID}:${_TOKEN}@${_HOST}/job/drivenets/job/cheetah/job/${BRANCH_PROC}/buildWithParameters?delay=0sec${OPTIONS:+&${OPTIONS}}"
     unset _HOST _USERID _TOKEN
 }
 
